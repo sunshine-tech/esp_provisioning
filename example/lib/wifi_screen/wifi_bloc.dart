@@ -35,7 +35,16 @@ class WifiBloc extends Bloc<WifiEvent, WifiState> {
 
     try {
       var listWifi = await prov.startScanWiFi();
-      yield WifiStateLoaded(wifiList: listWifi ?? []);
+      List<Map<String, dynamic>> mapListWifi = [];
+      listWifi.forEach((element) {
+        mapListWifi.add({
+          'ssid': element.ssid,
+          'rssi': element.rssi,
+          'auth': element.private.toString() != 'Open'
+        });
+      });
+
+      yield WifiStateLoaded(mapListWifi);
       log.v('Wifi $listWifi');
     } catch (e) {
       log.e('Error scan WiFi network $e');
